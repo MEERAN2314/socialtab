@@ -35,12 +35,41 @@ SocialTab solves the awkward problem of tracking informal debts between friends.
 
 ## 📦 Installation
 
-### Prerequisites
+### 🐳 Quick Start with Docker (Recommended!)
+
+**Easiest way to run the app:**
+
+1. **Install Docker**
+   - [Get Docker](https://docs.docker.com/get-docker/)
+
+2. **Clone and configure**
+```bash
+git clone <your-repo-url>
+cd socialtab
+cp .env.example .env
+# Edit .env with your MongoDB Atlas URL
+```
+
+3. **Run with one command**
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+4. **Access the app**
+   - Open: http://localhost
+
+📖 **Full Docker guide**: See [DOCKER.md](DOCKER.md)
+
+---
+
+### 🐍 Manual Installation (Without Docker)
+
+**Prerequisites:**
 - Python 3.8 or higher
 - MongoDB Atlas account (free tier works)
 - pip package manager
 
-### Setup Steps
+**Setup Steps:**
 
 1. **Clone the repository**
 ```bash
@@ -171,6 +200,33 @@ socialtab/
 ✅ Prototype screenshots in `/screenshots` folder
 ✅ Documentation (this README + inline comments)
 
+## �  Deployment on Render
+
+### Quick Deploy
+
+1. **Push to GitHub**
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/yourusername/socialtab.git
+git push -u origin main
+```
+
+2. **Deploy on Render**
+- Go to [render.com](https://render.com)
+- Click "New +" → "Blueprint"
+- Connect your GitHub repo
+- Render will auto-detect `render.yaml`
+- Add environment variables:
+  - `MONGODB_URL`: Your MongoDB Atlas connection string
+  - `SECRET_KEY`: Generate with `python -c "import secrets; print(secrets.token_urlsafe(32))"`
+- Click "Apply"
+
+3. **Done!** Your app will be live at `https://socialtab.onrender.com`
+
+📖 **Detailed deployment guide**: See [DEPLOYMENT.md](DEPLOYMENT.md)
+
 ## 🐛 Troubleshooting
 
 **MongoDB Connection Issues**
@@ -188,6 +244,10 @@ uvicorn main:app --reload --port 8001
 pip install --upgrade pip
 pip install -r requirements.txt --no-cache-dir
 ```
+
+**Module Not Found Error**
+- Ensure all `__init__.py` files exist in directories
+- Check Python path: `export PYTHONPATH="${PYTHONPATH}:${PWD}"`
 
 ## 🚀 Future Enhancements
 
