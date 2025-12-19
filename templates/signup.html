@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up - SocialTab{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-card" data-aos="fade-up">
+            <div class="auth-header">
+                <i class="fas fa-user-plus"></i>
+                <h2>Create Account</h2>
+                <p>Join SocialTab and never forget a debt again</p>
+            </div>
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <input type="text" id="username" name="username" required 
+                           placeholder="Choose a username" pattern="[a-zA-Z0-9_-]{3,30}"
+                           minlength="3" maxlength="30" autocomplete="username">
+                    <small>3-30 characters, alphanumeric only</small>
+                </div>
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i> Email
+                    </label>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="your@email.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="full_name">
+                        <i class="fas fa-id-card"></i> Full Name (Optional)
+                    </label>
+                    <input type="text" id="full_name" name="full_name" 
+                           placeholder="Your full name" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="pin">
+                        <i class="fas fa-lock"></i> Create PIN (4-6 digits)
+                    </label>
+                    <input type="password" id="pin" name="pin" required 
+                           placeholder="Create a secure PIN" pattern="[0-9]{4,6}" 
+                           maxlength="6" autocomplete="new-password">
+                    <small>Biometric authentication simulation</small>
+                </div>
+                <div class="form-group">
+                    <label for="pin_confirm">
+                        <i class="fas fa-lock"></i> Confirm PIN
+                    </label>
+                    <input type="password" id="pin_confirm" name="pin_confirm" required 
+                           placeholder="Confirm your PIN" pattern="[0-9]{4,6}" 
+                           maxlength="6" autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="signupBtn">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>Already have an account? <a href="/login">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const pin = document.getElementById('pin').value;
+    const pinConfirm = document.getElementById('pin_confirm').value;
+    
+    if (pin !== pinConfirm) {
+        showToast('PINs do not match', 'error');
+        return;
+    }
+    
+    const btn = document.getElementById('signupBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+    
+    const formData = {
+        username: document.getElementById('username').value,
+        email: document.getElementById('email').value,
+        pin: pin,
+        full_name: document.getElementById('full_name').value || null
+    };
+    
+    try {
+        const response = await fetch('/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            localStorage.setItem('token', data.access_token);
+            localStorage.setItem('username', data.username);
+            showToast('Account created successfully! Redirecting...', 'success');
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 1000);
+        } else {
+            showToast(data.detail || 'Signup failed', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+        }
+    } catch (error) {
+        showToast('Network error. Please try again.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+    }
+});
+</script>
+{% endblock %}

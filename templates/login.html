@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Login - SocialTab{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-card" data-aos="fade-up">
+            <div class="auth-header">
+                <i class="fas fa-fingerprint"></i>
+                <h2>Welcome Back</h2>
+                <p>Enter your credentials to access your account</p>
+            </div>
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <input type="text" id="username" name="username" required 
+                           placeholder="Enter your username" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="pin">
+                        <i class="fas fa-lock"></i> PIN (4-6 digits)
+                    </label>
+                    <input type="password" id="pin" name="pin" required 
+                           placeholder="Enter your PIN" pattern="[0-9]{4,6}" 
+                           maxlength="6" autocomplete="current-password">
+                    <small>Biometric authentication simulation</small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="/signup">Sign up here</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+    
+    const formData = {
+        username: document.getElementById('username').value,
+        pin: document.getElementById('pin').value
+    };
+    
+    try {
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            localStorage.setItem('token', data.access_token);
+            localStorage.setItem('username', data.username);
+            showToast('Login successful! Redirecting...', 'success');
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 1000);
+        } else {
+            showToast(data.detail || 'Login failed', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+        }
+    } catch (error) {
+        showToast('Network error. Please try again.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - SocialTab{% endblock %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="container">
+        <div class="dashboard-header" data-aos="fade-down">
+            <h1>Welcome, <span id="userName"></span>!</h1>
+            <button class="btn btn-primary" onclick="showNewDebtModal()">
+                <i class="fas fa-plus"></i> New Debt
+            </button>
+        </div>
+
+        <div class="stats-grid" data-aos="fade-up">
+            <div class="stat-card stat-positive">
+                <div class="stat-icon">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="totalOwedToMe">$0.00</h3>
+                    <p>Owed to Me</p>
+                </div>
+            </div>
+            <div class="stat-card stat-negative">
+                <div class="stat-icon">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="totalIOwe">$0.00</h3>
+                    <p>I Owe</p>
+                </div>
+            </div>
+            <div class="stat-card stat-neutral">
+                <div class="stat-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="netBalance">$0.00</h3>
+                    <p>Net Balance</p>
+                </div>
+            </div>
+            <div class="stat-card stat-info">
+                <div class="stat-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 id="notificationCount">0</h3>
+                    <p>Notifications</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-tabs" data-aos="fade-up" data-aos-delay="100">
+            <button class="tab-btn active" onclick="switchTab('owed')">
+                <i class="fas fa-hand-holding-usd"></i> Owed to Me
+            </button>
+            <button class="tab-btn" onclick="switchTab('owing')">
+                <i class="fas fa-money-bill-wave"></i> I Owe
+            </button>
+            <button class="tab-btn" onclick="switchTab('notifications')">
+                <i class="fas fa-bell"></i> Notifications
+            </button>
+            <button class="tab-btn" onclick="switchTab('history')">
+                <i class="fas fa-history"></i> History
+            </button>
+        </div>
+
+        <div class="tab-content active" id="owedTab">
+            <div id="owedList" class="debt-list"></div>
+        </div>
+
+        <div class="tab-content" id="owingTab">
+            <div id="owingList" class="debt-list"></div>
+        </div>
+
+        <div class="tab-content" id="notificationsTab">
+            <div id="notificationsList" class="notifications-list"></div>
+        </div>
+
+        <div class="tab-content" id="historyTab">
+            <div id="historyList" class="debt-list"></div>
+        </div>
+    </div>
+</section>
+
+<!-- New Debt Modal -->
+<div id="newDebtModal" class="modal">
+    <div class="modal-content" data-aos="zoom-in">
+        <div class="modal-header">
+            <h2><i class="fas fa-plus-circle"></i> Create New Debt</h2>
+            <button class="modal-close" onclick="closeNewDebtModal()">&times;</button>
+        </div>
+        <form id="newDebtForm">
+            <div class="form-group">
+                <label for="debtorUsername">
+                    <i class="fas fa-user"></i> Who owes you?
+                </label>
+                <input type="text" id="debtorUsername" required 
+                       placeholder="Enter username" autocomplete="off">
+                <small id="userCheck"></small>
+            </div>
+            <div class="form-group">
+                <label for="amount">
+                    <i class="fas fa-dollar-sign"></i> Amount
+                </label>
+                <input type="number" id="amount" required step="0.01" min="0.01"
+                       placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label for="description">
+                    <i class="fas fa-comment"></i> What for?
+                </label>
+                <input type="text" id="description" required maxlength="200"
+                       placeholder="e.g., Lunch at cafe">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="createDebtBtn">
+                <i class="fas fa-check"></i> Create Debt
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

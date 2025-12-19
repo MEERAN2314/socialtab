@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SocialTab - Social Credit Ledger{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar" data-aos="fade-down">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-handshake"></i>
+                <span>SocialTab</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                {% if request.cookies.get('token') %}
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="#" onclick="logout()" class="nav-link">Logout</a>
+                {% else %}
+                <a href="/login" class="nav-link">Login</a>
+                <a href="/signup" class="nav-link btn-primary">Sign Up</a>
+                {% endif %}
+            </div>
+            <div class="nav-toggle" onclick="toggleNav()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 SocialTab. Built for HackForge'25 - WB-3 Challenge</p>
+            <p>Made with <i class="fas fa-heart" style="color: #10b981;"></i> for better friendships</p>
+        </div>
+    </footer>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
